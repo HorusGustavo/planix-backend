@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -153,5 +154,29 @@ public class PlanoController {
             return r;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(lista);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<PlanoResponse> atualizar(
+            @PathVariable Long id,
+            @RequestParam String nome,
+            @RequestParam Plano.Tipo tipo,
+            @RequestParam String regiao,
+            @RequestParam Plano.Acomodacao acomodacao,
+            @RequestParam Plano.Coparticipacao coparticipacao,
+            @RequestParam Long operadoraId) {
+
+        Plano plano = planoService.buscarPorId(id);
+        Operadora operadora = operadoraService.buscarPorId(operadoraId);
+
+        plano.setNome(nome);
+        plano.setTipo(tipo);
+        plano.setRegiao(regiao);
+        plano.setAcomodacao(acomodacao);
+        plano.setCoparticipacao(coparticipacao);
+        plano.setOperadora(operadora);
+
+        Plano atualizado = planoService.salvar(plano);
+        return ResponseEntity.ok(toResponse(atualizado));
     }
 }

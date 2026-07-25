@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.planix.planix.entity.Carencia;
 import com.planix.planix.entity.Plano;
+import com.planix.planix.repository.CarenciaRepository;
 import com.planix.planix.service.CarenciaService;
 import com.planix.planix.service.PlanoService;
 
@@ -23,11 +25,13 @@ public class CarenciaController {
 
     private final CarenciaService carenciaService;
     private final PlanoService planoService;
+    private final CarenciaRepository carenciaRepository;
 
     @Autowired
-    public CarenciaController(CarenciaService carenciaService, PlanoService planoService) {
+    public CarenciaController(CarenciaService carenciaService, PlanoService planoService,CarenciaRepository carenciaRepository) {
         this.carenciaService = carenciaService;
         this.planoService = planoService;
+        this.carenciaRepository = carenciaRepository;
     }
 
     @PostMapping
@@ -50,5 +54,19 @@ public class CarenciaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         carenciaService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Carencia> atualizar(
+            @PathVariable Long id,
+            @RequestParam String descricao,
+            @RequestParam String prazo) {
+
+        Carencia carencia = carenciaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Carência não encontrada"));
+
+        carencia.setDescricao(descricao);
+        carencia.setPrazo(prazo);
+        return ResponseEntity.ok(carenciaRepository.save(carencia));
     }
 }

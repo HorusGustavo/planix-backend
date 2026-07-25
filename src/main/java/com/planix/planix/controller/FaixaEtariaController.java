@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,5 +79,30 @@ public class FaixaEtariaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         faixaEtariaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<FaixaEtaria> atualizar(
+            @PathVariable Long id,
+            @RequestParam(required = false) BigDecimal valorOriginal,
+            @RequestParam(required = false) BigDecimal valorComDesconto,
+            @RequestParam(required = false, defaultValue = "0") int desconto,
+            @RequestParam(required = false) BigDecimal valorAdesao1Vida,
+            @RequestParam(required = false) BigDecimal valorAdesao2Vidas,
+            @RequestParam(required = false) BigDecimal valorAdesao3Vidas,
+            @RequestParam(required = false) BigDecimal valorAdesao4Vidas) {
+
+        FaixaEtaria faixa = faixaEtariaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Faixa não encontrada"));
+
+        if (valorOriginal != null) faixa.setValorOriginal(valorOriginal);
+        if (valorComDesconto != null) faixa.setValorComDesconto(valorComDesconto);
+        faixa.setDesconto(desconto);
+        if (valorAdesao1Vida != null) faixa.setValorAdesao1Vida(valorAdesao1Vida);
+        if (valorAdesao2Vidas != null) faixa.setValorAdesao2Vidas(valorAdesao2Vidas);
+        if (valorAdesao3Vidas != null) faixa.setValorAdesao3Vidas(valorAdesao3Vidas);
+        if (valorAdesao4Vidas != null) faixa.setValorAdesao4Vidas(valorAdesao4Vidas);
+
+        return ResponseEntity.ok(faixaEtariaRepository.save(faixa));
     }
 }
