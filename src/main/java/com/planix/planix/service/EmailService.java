@@ -51,7 +51,7 @@ public class EmailService {
     }
 
     public void enviarEmailRedefinicaoSenha(String destinatario, String nome, String token) {
-        String link = "file:///Users/tuliomartins/Documents/front-planix/redefinir-senha.html?token=" + token;
+    	String link = "https://planix-frontend-beryl.vercel.app/redefinir-senha.html?token=" + token;
         String html = "<div style='font-family:Arial,sans-serif;max-width:500px;margin:0 auto;'>" +
             "<h2 style='color:#1a56db;'>Planix</h2>" +
             "<p>Olá <strong>" + nome + "</strong>,</p>" +
